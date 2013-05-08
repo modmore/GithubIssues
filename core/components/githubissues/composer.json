@@ -1,0 +1,9 @@
+{
+    "require": {
+        "knplabs/github-api": "*"
+    },
+    "minimum-stability": "dev",
+    "config": {
+        "preferred-install": "dist"
+    }
+}
