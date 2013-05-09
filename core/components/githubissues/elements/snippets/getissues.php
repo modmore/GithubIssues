@@ -8,9 +8,9 @@
 $githubissues = $modx->getService('githubissues', 'GithubIssues', $modx->getOption('githubissues.core_path', null, $modx->getOption('core_path') . 'components/githubissues/') . 'model/githubissues/');
 if (!($githubissues instanceof GithubIssues)) return '';
 
-// setup default properties
+// Snippet parameters
 $tpl = $modx->getOption('tpl', $scriptProperties, 'issue');
-
+$emptyMsg = $modx->getOption('emptyMsg', $scriptProperties, '<li>No issue</li>');
 $token = $modx->getOption('token', $scriptProperties, $modx->getOption('githubissues.token'));
 $label = $modx->getOption('label', $scriptProperties);
 $state = $modx->getOption('state', $scriptProperties);
@@ -25,8 +25,8 @@ if (!$fromUser) {
 if (!$forRepo) {
     return 'Which repository would you like to check against ?';
 }
-$client = new Github\Client();
-$client->authenticate($token, null, Github\Client::AUTH_URL_TOKEN);
+
+$client = $githubissues->getClient($token);
 
 $params = array();
 if ($label) $params['labels'] = $label;
@@ -42,6 +42,9 @@ $issues = $client->api('issue')
 $output = array();
 foreach ($issues as $issue) {
     $output[] = $githubissues->getChunk($tpl, $issue);
+}
+if (empty($output)) {
+    return $emptyMsg;
 }
 
 return implode("\n", $output);

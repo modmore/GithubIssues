@@ -12,6 +12,8 @@ class GithubIssues
     public $config = array();
     /** @var string $prefix The component prefix, mostly used during dev */
     public $prefix;
+    /** @var \Github\Client */
+    public $client;
 
     /**
      * Constructs the GithubIssues object
@@ -92,6 +94,19 @@ class GithubIssues
     public function getConfig()
     {
         return $this->config;
+    }
+
+    public function getClient($token = false)
+    {
+        if (!$this->client) {
+            if (!$token) {
+                $token = $this->modx->getOption('githubissues.token');
+            }
+            $this->client = new Github\Client();
+            $this->client->authenticate($token, null, Github\Client::AUTH_URL_TOKEN);
+        }
+
+        return $this->client;
     }
 
     /**

@@ -70,5 +70,7 @@ if ($code) {
 
     return 'Your token has been saved!';
 }
+$redirect = urlencode($modx->makeUrl($modx->resource->id, '', '', 'full'));
+$url = "https://github.com/login/oauth/authorize?client_id={$client}&scope=repo&redirect_uri={$redirect}";
 
-return 'Nuttin to see here, sorry';
+return '<a href="'. $url .'">Ready to authenticate ?</a>';
