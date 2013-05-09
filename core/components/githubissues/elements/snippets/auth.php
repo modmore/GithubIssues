@@ -50,8 +50,25 @@ if ($code) {
     if (!array_key_exists('access_token', $final)) {
         return 'Uhoh, something went wrong! (response : '. $response .')';
     }
+    $token = $final['access_token'];
+    /** @var modSystemSetting $setting */
+    $setting = $modx->getObject('modSystemSetting', 'githubissues.token');
+    if (!$setting) {
+        $setting = $modx->newObject('modSystemSetting');
+        $setting->fromArray(array(
+            'key' => 'githubissues.token',
+            'xtype' => 'text-password',
+            'namespace' => 'githubissues',
+            'area' => 'authentication'
+        ), '', true, true);
+    }
+    $setting->set('editedon', time());
+    $setting->set('value', $token);
+    if ($setting->save() === false) {
+        return "Something went wrong saving your token ({$token}) in a system setting";
+    }
 
-    return 'Your token key is <pre>' . $final['access_token'] . '</pre>';
+    return 'Your token has been saved!';
 }
 
 return 'Nuttin to see here, sorry';
