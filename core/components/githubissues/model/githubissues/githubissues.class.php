@@ -96,6 +96,13 @@ class GithubIssues
         return $this->config;
     }
 
+    /**
+     * Returns an instance of Github\Client
+     *
+     * @param mixed $token Optional API token
+     *
+     * @return \Github\Client
+     */
     public function getClient($token = false)
     {
         if (!$this->client) {
