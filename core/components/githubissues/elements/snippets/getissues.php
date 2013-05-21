@@ -14,6 +14,9 @@ $label = $modx->getOption('label', $scriptProperties);
 $state = $modx->getOption('state', $scriptProperties);
 $fromUser = $modx->getOption('fromUser', $scriptProperties, 'modmore');
 $forRepo = $modx->getOption('forRepo', $scriptProperties, 'GithubIssues');
+$sortBy = $modx->getOption('sortBy', $scriptProperties, 'created_at');
+$sortDir = $modx->getOption('sortDir', $scriptProperties, 'SORT_DESC');
+
 if (!$token) {
     return 'You MUST provide an API token';
 }
@@ -49,6 +52,25 @@ if ($state && in_array($state, $validStates)) $params['state'] = $state;
 $issues = $client->api('issue')
     ->all($fromUser, $forRepo, $params);
 
+/**
+ * @param array $array The array to sort
+ * @param string $column The array key to sort by
+ * @param string $sortDir The sorting option. See http://php.net/manual/en/function.array-multisort.php for valid constant names
+ */
+function sortMe(&$array, $column, $sortDir)
+{
+    $sortDir = strtoupper($sortDir);
+    // Grab a sorted array
+    $sorted = array();
+    foreach ($array as $key => $row) {
+        $sorted[$key] = $row[$column];
+    }
+    // Sort the original array accordingly
+    array_multisort($sorted, constant($sortDir), $array);
+}
+
+sortMe($issues, $sortBy, $sortDir);
+
 //$modx->log(modX::LOG_LEVEL_INFO, 'params : ' . print_r($params, true));
 //$modx->log(modX::LOG_LEVEL_INFO, print_r($issues, true));
 
@@ -64,5 +86,7 @@ if ($cacheTime !== false) {
     // Set to the default cache partition
     $modx->cacheManager->set($cacheKey, $output, $cacheTime);
 }
+
+//$modx->log(modX::LOG_LEVEL_INFO, print_r($output, true));
 
 return implode("\n", $output);
