@@ -57,16 +57,17 @@ $issues = $client->api('issue')
  * @param string $column The array key to sort by
  * @param string $sortDir The sorting option. See http://php.net/manual/en/function.array-multisort.php for valid constant names
  */
-function sortMe(&$array, $column, $sortDir)
-{
-    $sortDir = strtoupper($sortDir);
-    // Grab a sorted array
-    $sorted = array();
-    foreach ($array as $key => $row) {
-        $sorted[$key] = $row[$column];
+if (!function_exists('sortMe')) { 
+    function sortMe(&$array, $column, $sortDir) {
+        $sortDir = strtoupper($sortDir);
+        // Grab a sorted array
+        $sorted = array();
+        foreach ($array as $key => $row) {
+            $sorted[$key] = $row[$column];
+        }
+        // Sort the original array accordingly
+        array_multisort($sorted, constant($sortDir), $array);
     }
-    // Sort the original array accordingly
-    array_multisort($sorted, constant($sortDir), $array);
 }
 
 sortMe($issues, $sortBy, $sortDir);

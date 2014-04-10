@@ -22,6 +22,7 @@ $sources = array(
     'build' => $root . '_build/',
     'data' => $root . '_build/data/',
     'resolvers' => $root . '_build/resolvers/',
+    'packages' => $root.'_packages/',
     'chunks' => $root . 'core/components/'. PKG_NAME_LOWER .'/chunks/',
     'lexicon' => $root . 'core/components/'. PKG_NAME_LOWER .'/lexicon/',
     'docs' => $root . 'core/components/'. PKG_NAME_LOWER .'/docs/',
@@ -46,6 +47,7 @@ $modx->setLogTarget('ECHO');
 
 $modx->loadClass('transport.modPackageBuilder', '', false, true);
 $builder = new modPackageBuilder($modx);
+$builder->directory = $sources['packages'];
 $builder->createPackage(PKG_NAME_LOWER, PKG_VERSION, PKG_RELEASE);
 $builder->registerNamespace(PKG_NAME_LOWER, false, true, '{core_path}components/'. PKG_NAME_LOWER .'/');
 
